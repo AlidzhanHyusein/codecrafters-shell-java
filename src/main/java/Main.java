@@ -17,7 +17,7 @@ public class Main {
             switch (input){
                 case "exit" -> System.exit(0);
                 case "echo" -> System.out.println(input = scanner.nextLine().trim());
-                default -> System.err.printf("%s: command not found",input);
+                default -> System.err.printf("%s: command not found%n",input);
             }
 
         }
