@@ -25,26 +25,32 @@ public class Main {
                 case "type" -> {
                     if(builtins.contains(arguments)) {
                         System.out.println(arguments +" is a shell builtin");
-                        return;
                     }
 
                     String pathEnv = System.getenv("PATH");
 
                     if(pathEnv == null && pathEnv.isEmpty()) {
                         System.out.println(command + ": not found");
-                        return;
                     }
 
                     String[] paths = pathEnv.split(File.pathSeparator);
+                    boolean isFound = false;
 
                     for(String dir : paths){
                         File file = new File(dir,arguments);
 
                         if(file.exists() && file.isFile() && file.canExecute()){
                             System.out.println(arguments + " is " + file.getAbsolutePath());
-                            return;
+                            isFound = true;
+                            break;
                         }
+
+
                     }
+                    if(isFound){
+                        continue;
+                    }
+
                     System.out.println(command + ": not found");
                 }
                 default -> System.err.println(command + ": command not found");
