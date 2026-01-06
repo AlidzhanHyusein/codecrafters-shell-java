@@ -30,7 +30,7 @@ public class Main {
                     String pathEnv = System.getenv("PATH");
 
                     if(pathEnv == null && pathEnv.isEmpty()) {
-                        System.out.println(command + ": not found");
+                        System.out.println(arguments + ": not found");
                     }
 
                     String[] paths = pathEnv.split(File.pathSeparator);
@@ -51,7 +51,7 @@ public class Main {
                         continue;
                     }
 
-                    System.out.println(command + ": not found");
+                    System.out.println(arguments + ": not found");
                 }
                 default -> System.err.println(command + ": command not found");
             }
