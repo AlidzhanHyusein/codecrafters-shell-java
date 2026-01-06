@@ -38,7 +38,7 @@ public class Main {
                     String[] paths = pathEnv.split(File.pathSeparator);
 
                     for(String dir : paths){
-                        File file = new File(dir,command);
+                        File file = new File(dir,arguments);
 
                         if(file.exists() && file.isFile() && file.canExecute()){
                             System.out.println(arguments + " is " + file.getAbsolutePath());
