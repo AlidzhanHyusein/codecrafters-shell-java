@@ -25,12 +25,15 @@ public class Main {
                 case "type" -> {
                     if(builtins.contains(arguments)) {
                         System.out.println(arguments +" is a shell builtin");
+                        continue;
                     }
 
                     String pathEnv = System.getenv("PATH");
 
                     if(pathEnv == null && pathEnv.isEmpty()) {
                         System.out.println(arguments + ": not found");
+                        continue;
+
                     }
 
                     String[] paths = pathEnv.split(File.pathSeparator);
