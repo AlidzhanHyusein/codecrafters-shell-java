@@ -6,7 +6,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Set<String> builtins = Set.of("exit", "echo", "type","pwd");
+        Set<String> builtins = Set.of("exit", "echo", "type","pwd","cd");
 
         while (true) {
             System.out.print("$ ");
@@ -63,25 +63,35 @@ public class Main {
                     }
                 }
                 case "pwd" -> System.out.println(System.getProperty("user.dir"));
+                case "cd" -> {
+                    File dir = new File(tokens[1]);
+
+                    if(dir.exists() && dir.isDirectory()){
+                        System.setProperty("user.dir", dir.getAbsolutePath());
+                    } else {
+                        System.out.println("cd: " + dir.getAbsolutePath() + ": No such file or directory.");
+                    }
+                }
 
                 default -> {
                     String pathEnv = System.getenv("PATH");
-                    if (pathEnv == null || pathEnv.isEmpty()) {
-                        System.err.println(command + ": command not found");
+                    if(pathEnv == null || pathEnv.isEmpty()) {
+                        System.out.println(command + ": command not found");
                         continue;
                     }
-
                     File executable = null;
-                    for (String dir : pathEnv.split(File.pathSeparator)) {
-                        File candidate = new File(dir, command);
-                        if (candidate.exists() && candidate.isFile() && candidate.canExecute()) {
+
+                    for(String dir : pathEnv.split(File.pathSeparator)) {
+                        File candidate = new File(dir,command);
+
+                        if(candidate.exists() && candidate.isFile() && candidate.canExecute()) {
                             executable = candidate;
                             break;
                         }
                     }
 
-                    if (executable == null) {
-                        System.err.println(command + ": command not found");
+                    if(executable == null){
+                        System.out.println(command + ": command not found");
                         continue;
                     }
 
@@ -89,15 +99,13 @@ public class Main {
                     cmd.add(command);
                     cmd.addAll(Arrays.asList(tokens).subList(1, tokens.length));
 
-                    ProcessBuilder pb = new ProcessBuilder(cmd);
-                    pb.directory(executable.getParentFile());
+                    ProcessBuilder builder = new ProcessBuilder(cmd);
+                    builder.directory(executable.getParentFile());
 
-                    pb.inheritIO();
-
-                    try {
-                        pb.start().waitFor();
-                    } catch (Exception e) {
-                        System.err.println("Error executing command");
+                    try{
+                        builder.start().waitFor();
+                    }catch(Exception e){
+                        System.out.println(e.getMessage());
                     }
                 }
 
