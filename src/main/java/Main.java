@@ -4,6 +4,7 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
+
         Scanner scanner = new Scanner(System.in);
 
         Set<String> builtins = Set.of("exit", "echo", "type","pwd","cd");
@@ -15,19 +16,45 @@ public class Main {
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) continue;
 
-            String[] tokens = input.split("\\s+");
+            String[] tokens = input.split("\\s");
             String command = tokens[0];
 
             switch (command) {
                 case "exit" -> System.exit(0);
 
                 case "echo" -> {
-                    if (tokens.length > 1) {
-                        System.out.println(String.join(" ", Arrays.copyOfRange(tokens, 1, tokens.length)));
-                    } else {
+                    if (tokens.length <= 1) {
                         System.out.println();
+                        continue;
                     }
+
+                    String inputs = String.join(" ", Arrays.copyOfRange(tokens, 1, tokens.length));
+                    StringBuilder result = new StringBuilder();
+
+                    boolean inQuotes = false;
+                    boolean lastWasSpace = false;
+
+                    for (char c : inputs.toCharArray()) {
+
+                        if (c == '\'') {
+                            inQuotes = !inQuotes;
+                            continue;
+                        }
+
+                        if (c == ' ' && !inQuotes) {
+                            if (!lastWasSpace) {
+                                result.append(' ');
+                                lastWasSpace = true;
+                            }
+                        } else {
+                            result.append(c);
+                            lastWasSpace = false;
+                        }
+                    }
+
+                    System.out.println(result.toString());
                 }
+
 
                 case "type" -> {
                     if (tokens.length < 2) {
@@ -129,8 +156,8 @@ public class Main {
                     }
                 }
 
-
             }
         }
     }
+
 }
