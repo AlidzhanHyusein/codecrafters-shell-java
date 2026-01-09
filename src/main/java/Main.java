@@ -66,18 +66,28 @@ public class Main {
                 case "cd" -> {
                     File cwd = new File(System.getProperty("user.dir"));
                     File dir;
-                    if(tokens[1].startsWith("./")){
-                        dir = new File(cwd, tokens[1].substring(2));
-                    } else if (tokens[1].startsWith("../")){
-                        dir = new File(cwd.getParentFile(), tokens[1].substring(3));
+
+                    String path = tokens[1];
+                    if(path.startsWith("./")){
+                        dir = new File(cwd,path.substring(2));
+                    } else if (path.startsWith("../")){
+                        dir = cwd;
+                        while(path.startsWith("../")){
+                            dir = dir.getParentFile();
+                            path = path.substring(3);
+                        }
+                        if(dir == null){
+                            break;
+                        }
+                        System.setProperty("user.dir", dir.getAbsolutePath());
                     } else {
-                        dir = new File(tokens[1]);
+                        dir = new File(path);
                     }
 
                     if(dir.exists() && dir.isDirectory() && dir != null){
                         System.setProperty("user.dir", dir.getAbsolutePath());
                     } else {
-                        System.err.println("cd: no such file or directory: " + tokens[1]);
+                        System.err.println("cd: no such file or directory: " + path);
                     }
                 }
 
