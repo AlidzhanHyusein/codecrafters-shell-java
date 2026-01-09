@@ -80,7 +80,10 @@ public class Main {
                             break;
                         }
                         System.setProperty("user.dir", dir.getAbsolutePath());
-                    } else {
+                    } else if(path.equals("~")){
+                        dir = new File(System.getenv().get("HOME"));
+                    }
+                    else {
                         dir = new File(path);
                     }
 
